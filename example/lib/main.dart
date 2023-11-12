@@ -8,7 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // open database
-  await SqfliteEasyDb().open();
+  SqfliteEasyDb().open();
 
   // create database table example
   UserModel()

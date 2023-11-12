@@ -7,7 +7,7 @@ import '../helper/models/column_types.dart';
 
 const dbname = "zahidaz_dot_com";
 
-IndexOfNth(String str, String value, int nth)
+indexOfNth(String str, String value, int nth)
 {
   if (nth < 0)
     return;
@@ -147,8 +147,8 @@ class SqfliteEasyDb{
   SqfliteEasyDb page(int number){
     // int page = number <= 1 ? 1 : number;
     // if(page > 1){
-    String offset_caculate = ((number-1) * skipped_value).toString();
-    offset = 'OFFSET $offset_caculate';
+    String offsetCaculate = ((number-1) * skipped_value).toString();
+    offset = 'OFFSET $offsetCaculate';
     // }
     return this;
   }
@@ -490,10 +490,10 @@ class SqfliteEasyDb{
 
         List a;
         a = arr[i].split(" ");
-        String old_column = a[0].toString();
-        String statement_check_column = "PRAGMA table_info($tableName)";
-        List list = await db.rawQuery(statement_check_column);
-        list = list.where((element) => element["name"] == old_column).toList();
+        String oldColumn = a[0].toString();
+        String statementCheckColumn = "PRAGMA table_info($tableName)";
+        List list = await db.rawQuery(statementCheckColumn);
+        list = list.where((element) => element["name"] == oldColumn).toList();
         if(list.isNotEmpty){
           statement = 'ALTER TABLE $tableName RENAME COLUMN ${arr[i]}';
           db.execute(statement);
@@ -542,8 +542,8 @@ class SqfliteEasyDb{
   }
 
   isColumnExists(db, column) async {
-    String statement_check_column = "PRAGMA table_info($tableName)";
-    List list = await db.rawQuery(statement_check_column);
+    String statementCheckColumn = "PRAGMA table_info($tableName)";
+    List list = await db.rawQuery(statementCheckColumn);
     list = list.where((element) => element["name"] == column).toList();
     if(list.isNotEmpty){
       return true;
@@ -553,10 +553,10 @@ class SqfliteEasyDb{
   }
   removeAllTables() async {
     var db = await openDatabase(db_name);
-    List all_tables = await db.rawQuery('SELECT * FROM sqlite_master ORDER BY name;');
-    for(int i = 1; i < all_tables.length; ++i){
-      if(all_tables[i]['name'] != "sqlite_sequence"){
-        await db.execute("DROP TABLE IF EXISTS ${all_tables[i]['name']}");
+    List allTables = await db.rawQuery('SELECT * FROM sqlite_master ORDER BY name;');
+    for(int i = 1; i < allTables.length; ++i){
+      if(allTables[i]['name'] != "sqlite_sequence"){
+        await db.execute("DROP TABLE IF EXISTS ${allTables[i]['name']}");
         db.execute(statement);
       }
     }
@@ -575,7 +575,7 @@ class SqfliteEasyDb{
       return this;
     }
 
-    int postitonOfBracket = IndexOfNth(where_conditions, ')', callbackLevel - 1);
+    int postitonOfBracket = indexOfNth(where_conditions, ')', callbackLevel - 1);
     if(postitonOfBracket <= 0){
       where_conditions += '$type ($col $operator "$value") ';
       return this;
@@ -599,7 +599,7 @@ class SqfliteEasyDb{
       return this;
     }
 
-    int postitonOfBracket = IndexOfNth(where_conditions, ')', callbackLevel - 1);
+    int postitonOfBracket = indexOfNth(where_conditions, ')', callbackLevel - 1);
     if(postitonOfBracket <= 0){
       where_conditions += '$type ($col IN "$list") ';
       return this;
@@ -624,7 +624,7 @@ class SqfliteEasyDb{
       return this;
     }
 
-    int postitonOfBracket = IndexOfNth(where_conditions, ')', callbackLevel - 1);
+    int postitonOfBracket = indexOfNth(where_conditions, ')', callbackLevel - 1);
     if(postitonOfBracket <= 0){
       where_conditions += '$type ($col IN "$list") ';
       return this;
@@ -650,7 +650,7 @@ class SqfliteEasyDb{
       return this;
     }
 
-    int postitonOfBracket = IndexOfNth(where_conditions, ')', callbackLevel - 1);
+    int postitonOfBracket = indexOfNth(where_conditions, ')', callbackLevel - 1);
     if(postitonOfBracket <= 0){
       where_conditions += '$type ($col IN BETWEEN "$val1" AND "$val2") ';
       return this;
@@ -673,7 +673,7 @@ class SqfliteEasyDb{
       return this;
     }
 
-    int postitonOfBracket = IndexOfNth(where_conditions, ')', callbackLevel - 1);
+    int postitonOfBracket = indexOfNth(where_conditions, ')', callbackLevel - 1);
     if(postitonOfBracket <= 0){
       where_conditions += '$type ($col IS NULL) ';
       return this;
@@ -992,16 +992,16 @@ class SqfliteEasyDb{
     var db = await openDatabase(db_name);
     return await db.rawQuery('SELECT * FROM sqlite_master ORDER BY name;');
   }
-  getAllColumns(table_name) async {
+  getAllColumns(tableName) async {
     var db = await openDatabase(db_name);
-    String statement_check_column = "PRAGMA table_info($table_name)";
-    List list = await db.rawQuery(statement_check_column);
+    String statementCheckColumn = "PRAGMA table_info($tableName)";
+    List list = await db.rawQuery(statementCheckColumn);
     return list;
   }
 
-  getAllData(table_name) async {
+  getAllData(tableName) async {
     var db = await openDatabase(db_name);
-    List list = await db.rawQuery('SELECT * FROM ${table_name};');
+    List list = await db.rawQuery('SELECT * FROM ${tableName};');
     return list;
   }
 
