@@ -1,0 +1,22 @@
+Future<List<Map<String, dynamic>>> getUsersWithBooks() async {
+  final Database db = // Initialize your sqflite database here
+
+  final List<Map<String, dynamic>> usersWithBooks = [];
+
+  final List<Map<String, dynamic>> users = await db.query('users');
+
+  for (final user in users) {
+    final List<Map<String, dynamic>> books = await db.query(
+      'books',
+      where: 'user_id = ?',
+      whereArgs: [user['id']],
+    );
+
+    usersWithBooks.add({
+      'id': user['id'],
+      'books': books.map((book) => {'id': book['id']}).toList(),
+    });
+  }
+
+  return usersWithBooks;
+}
