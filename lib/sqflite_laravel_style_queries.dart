@@ -7,7 +7,7 @@ import '../helper/models/column_types.dart';
 
 const dbname = "zahidaz_dot_com";
 
-indexOfNth(String str, String value, int nth)
+IndexOfNth(String str, String value, int nth)
 {
   if (nth < 0)
     return;
@@ -22,15 +22,15 @@ indexOfNth(String str, String value, int nth)
   return offset;
 }
 
-class SqfliteEasyDb{
+class AzSqflite{
 
   late Database db;
   String db_name = dbname;
 
-  SqfliteEasyDb() :
+  AzSqflite() :
         select_paramters = '*',
         tableName = 'table', join_statement = '',
-        where_conditions = '', order_by_sorting = '', limit_result = '', offset = '', skipped_value = 1,
+        where_conditions = '', group_by_sorting = '',  order_by_sorting = '', limit_result = '', offset = '', skipped_value = 1,
         statement = '', queryResult = [{}], geted = [], plucked = [],
         excute_trigger = 'add_column', add_column = '', rename_column = '', drop_column = '', rename_table = '';
 
@@ -41,6 +41,7 @@ class SqfliteEasyDb{
 
   String where_conditions; int whereCallback = 0;
   String order_by_sorting;
+  String group_by_sorting;
   String limit_result;
   String offset; int skipped_value;// skip result
   String statement;
@@ -56,25 +57,25 @@ class SqfliteEasyDb{
   String rename_table;
 
   //
-  // SqfliteEasyDb hasOne(SqfliteEasyDb model, key, foreignKey){
+  // AzSqflite hasOne(AzSqflite model, key, foreignKey){
   //   // model.where(foreignKey)
   //   // print(1);
   //   return this;
   // }
-  // SqfliteEasyDb withHasOne({table, key, foreignKey}){
+  // AzSqflite withHasOne({table, key, foreignKey}){
   //   return this;
   // }
 
   // Use to make statement.
-  SqfliteEasyDb select(List list){
+  AzSqflite select(List list){
     select_paramters = list.join(', ');
     return this;
   }
-  SqfliteEasyDb table(String table){
+  AzSqflite table(String table){
     tableName = table;
     return this;
   }
-  SqfliteEasyDb joining(String join){
+  AzSqflite joining(String join){
     if(join_statement == ''){
       join_statement = join;
       return this;
@@ -83,47 +84,55 @@ class SqfliteEasyDb{
     join_statement += join;
     return this;
   }
-  SqfliteEasyDb where(col, value, {operator = "=", callbackLevel = 0}){
+  AzSqflite where(col, value, {operator = "=", callbackLevel = 0}){
     whereFunc('AND', col, operator, value, callbackLevel: callbackLevel);
     return this;
   }
-  SqfliteEasyDb orWhere(col, value, {operator = "=", callbackLevel = 0}){
+  AzSqflite orWhere(col, value, {operator = "=", callbackLevel = 0}){
     whereFunc("OR", col, operator, value, callbackLevel: callbackLevel);
     return this;
   }
-  SqfliteEasyDb whereIn(String col, List list, {callbackLevel = 0}){
+  AzSqflite whereIn(String col, List list, {callbackLevel = 0}){
     whereInFunc('AND', col, list, callbackLevel: callbackLevel);
     return this;
   }
-  SqfliteEasyDb orWhereIn(String col, List list, {callbackLevel = 0}){
+  AzSqflite orWhereIn(String col, List list, {callbackLevel = 0}){
     whereInFunc('OR', col, list, callbackLevel: callbackLevel);
     return this;
   }
-  SqfliteEasyDb whereNotIn(String col, List list, {callbackLevel = 0}){
+  AzSqflite whereNotIn(String col, List list, {callbackLevel = 0}){
     whereNotInFunc('AND', col, list, callbackLevel: callbackLevel);
     return this;
   }
-  SqfliteEasyDb whereBetween(String col, List list, {callbackLevel = 0}){
+  AzSqflite whereBetween(String col, List list, {callbackLevel = 0}){
     whereBetweenFunc('AND', col, list, callbackLevel: callbackLevel);
     return this;
   }
-  SqfliteEasyDb orWhereBetween(String col, List list, {callbackLevel = 0}){
+  AzSqflite orWhereBetween(String col, List list, {callbackLevel = 0}){
     whereBetweenFunc('OR', col, list, callbackLevel: callbackLevel);
     return this;
   }
-  SqfliteEasyDb whereNull(String col, {callbackLevel = 0}){
+  AzSqflite whereNull(String col, {callbackLevel = 0}){
     whereNulFunc('AND', col, callbackLevel: callbackLevel);
     return this;
   }
-  SqfliteEasyDb orWhereNull(String col, {callbackLevel = 0}){
+  AzSqflite orWhereNull(String col, {callbackLevel = 0}){
     whereNulFunc('OR', col, callbackLevel: callbackLevel);
     return this;
   }
-  SqfliteEasyDb whereCallBack(calss){
+  AzSqflite whereCallBack(calss){
     where_conditions += calss.where_conditions;
     return this;
   }
-  SqfliteEasyDb orderBy(col, order){
+  AzSqflite groupBy(col){
+    if(group_by_sorting == ''){
+      group_by_sorting = 'GROUP BY $col ';
+    }else{
+      group_by_sorting += ', $col ';
+    }
+    return this;
+  }
+  AzSqflite orderBy(col, order){
     if(order_by_sorting == ''){
       order_by_sorting = 'ORDER BY $col $order ';
     }else{
@@ -131,24 +140,24 @@ class SqfliteEasyDb{
     }
     return this;
   }
-  SqfliteEasyDb limit(int number){
+  AzSqflite limit(int number){
     if(limit_result == ''){
       limit_result = 'Limit $number';
     }
     return this;
   }
-  SqfliteEasyDb skip(int number){
+  AzSqflite skip(int number){
     // if(offset == ''){
     offset = 'OFFSET $number';
     skipped_value = number;
     // }
     return this;
   }
-  SqfliteEasyDb page(int number){
+  AzSqflite page(int number){
     // int page = number <= 1 ? 1 : number;
     // if(page > 1){
-    String offsetCaculate = ((number-1) * skipped_value).toString();
-    offset = 'OFFSET $offsetCaculate';
+    String offset_caculate = ((number-1) * skipped_value).toString();
+    offset = 'OFFSET $offset_caculate';
     // }
     return this;
   }
@@ -364,38 +373,46 @@ class SqfliteEasyDb{
 
   Map<String, dynamic> toJson() => {};
 
-  insert(){
-    queryResult = callInsertQuery([toJson()]);
+  insert(jsonObj){
+    if(jsonObj != null){
+      queryResult = callInsertQuery([jsonObj]);
+    }else{
+      queryResult = callInsertQuery([toJson()]);
+    }
     return queryResult;
     // return this;
   }
 
-  // SqfliteEasyDb insertArray(){
+  // AzSqflite insertArray(){
   //   queryResult = callInsertQueryArray([toJson()]);
   //   return this;
   // }
 
-  // SqfliteEasyDb insert(Map<String, dynamic> map){
+  // AzSqflite insert(Map<String, dynamic> map){
   //   queryResult = callInsertQuery([map]);
   //   return this;
   // }
 
-  // SqfliteEasyDb insertArray(List<Map<String, dynamic>> map){
+  // AzSqflite insertArray(List<Map<String, dynamic>> map){
   //   queryResult = callInsertQueryArray(map);
   //   return this;
   // }
 
-  SqfliteEasyDb update(){
-    queryResult = callUpdateQuery(toJson());
+  AzSqflite update(jsonObj){
+    if(jsonObj != null){
+      queryResult = callUpdateQuery(jsonObj);
+    }else{
+      queryResult = callUpdateQuery(toJson());
+    }
     return this;
   }
-  // SqfliteEasyDb update(Map<String, dynamic> map){
+  // AzSqflite update(Map<String, dynamic> map){
   //   queryResult = callUpdateQuery(map);
   //   return this;
   // }
 
 
-  SqfliteEasyDb addColumn({required name, required ColumnType type, isNUll = false, isPrimaryKey = false, isAutoIncrement = false}){
+  AzSqflite addColumn({required name, required ColumnType type, isNUll = false, isPrimaryKey = false, isAutoIncrement = false}){
     excute_trigger = 'add_column';
 
     add_column += '$name $type';
@@ -417,7 +434,7 @@ class SqfliteEasyDb{
 
     return this;
   }
-  SqfliteEasyDb renameColumn({required oldName, required newName}){
+  AzSqflite renameColumn({required oldName, required newName}){
     excute_trigger = 'rename_column';
 
     rename_column += '$oldName to $newName';
@@ -426,7 +443,7 @@ class SqfliteEasyDb{
 
     return this;
   }
-  SqfliteEasyDb dropColumn({required name}){
+  AzSqflite dropColumn({required name}){
     excute_trigger = 'drop_column';
 
     drop_column += '$name';
@@ -434,7 +451,7 @@ class SqfliteEasyDb{
 
     return this;
   }
-  SqfliteEasyDb renameTable({required oldName, required newName}){
+  AzSqflite renameTable({required oldName, required newName}){
     excute_trigger = 'rename_table';
 
     rename_table = 'ALTER TABLE $oldName RENAME TO $newName';
@@ -442,12 +459,12 @@ class SqfliteEasyDb{
 
     return this;
   }
-  SqfliteEasyDb dropTable() {
+  AzSqflite dropTable() {
     excute_trigger = 'drop_table';
     return this;
   }
 
-  Future<SqfliteEasyDb> execute() async {
+  Future<AzSqflite> execute() async {
     var db = await openDatabase(db_name);
 
     if(excute_trigger == 'add_column'){
@@ -490,10 +507,10 @@ class SqfliteEasyDb{
 
         List a;
         a = arr[i].split(" ");
-        String oldColumn = a[0].toString();
-        String statementCheckColumn = "PRAGMA table_info($tableName)";
-        List list = await db.rawQuery(statementCheckColumn);
-        list = list.where((element) => element["name"] == oldColumn).toList();
+        String old_column = a[0].toString();
+        String statement_check_column = "PRAGMA table_info($tableName)";
+        List list = await db.rawQuery(statement_check_column);
+        list = list.where((element) => element["name"] == old_column).toList();
         if(list.isNotEmpty){
           statement = 'ALTER TABLE $tableName RENAME COLUMN ${arr[i]}';
           db.execute(statement);
@@ -542,8 +559,8 @@ class SqfliteEasyDb{
   }
 
   isColumnExists(db, column) async {
-    String statementCheckColumn = "PRAGMA table_info($tableName)";
-    List list = await db.rawQuery(statementCheckColumn);
+    String statement_check_column = "PRAGMA table_info($tableName)";
+    List list = await db.rawQuery(statement_check_column);
     list = list.where((element) => element["name"] == column).toList();
     if(list.isNotEmpty){
       return true;
@@ -553,10 +570,10 @@ class SqfliteEasyDb{
   }
   removeAllTables() async {
     var db = await openDatabase(db_name);
-    List allTables = await db.rawQuery('SELECT * FROM sqlite_master ORDER BY name;');
-    for(int i = 1; i < allTables.length; ++i){
-      if(allTables[i]['name'] != "sqlite_sequence"){
-        await db.execute("DROP TABLE IF EXISTS ${allTables[i]['name']}");
+    List all_tables = await db.rawQuery('SELECT * FROM sqlite_master ORDER BY name;');
+    for(int i = 1; i < all_tables.length; ++i){
+      if(all_tables[i]['name'] != "sqlite_sequence"){
+        await db.execute("DROP TABLE IF EXISTS ${all_tables[i]['name']}");
         db.execute(statement);
       }
     }
@@ -564,7 +581,7 @@ class SqfliteEasyDb{
   }
 
   // helping in making statement
-  SqfliteEasyDb whereFunc(type, col, operator, value, {callbackLevel = 0}){
+  AzSqflite whereFunc(type, col, operator, value, {callbackLevel = 0}){
     if(callbackLevel == 0 && where_conditions == ''){
       where_conditions = 'WHERE $col $operator "$value" ';
       return this;
@@ -575,7 +592,7 @@ class SqfliteEasyDb{
       return this;
     }
 
-    int postitonOfBracket = indexOfNth(where_conditions, ')', callbackLevel - 1);
+    int postitonOfBracket = IndexOfNth(where_conditions, ')', callbackLevel - 1);
     if(postitonOfBracket <= 0){
       where_conditions += '$type ($col $operator "$value") ';
       return this;
@@ -587,7 +604,7 @@ class SqfliteEasyDb{
     // print(where_conditions);
     return this;
   }
-  SqfliteEasyDb whereInFunc(type, col, _list, {callbackLevel = 0}){
+  AzSqflite whereInFunc(type, col, _list, {callbackLevel = 0}){
     String list = "( " + _list.join(', ') + " )";
     if(callbackLevel == 0 && where_conditions == ''){
       where_conditions = 'WHERE $col IN "$list" ';
@@ -599,7 +616,7 @@ class SqfliteEasyDb{
       return this;
     }
 
-    int postitonOfBracket = indexOfNth(where_conditions, ')', callbackLevel - 1);
+    int postitonOfBracket = IndexOfNth(where_conditions, ')', callbackLevel - 1);
     if(postitonOfBracket <= 0){
       where_conditions += '$type ($col IN "$list") ';
       return this;
@@ -612,7 +629,7 @@ class SqfliteEasyDb{
     // print(where_conditions);
     return this;
   }
-  SqfliteEasyDb whereNotInFunc(type, col, _list, {callbackLevel = 0}){
+  AzSqflite whereNotInFunc(type, col, _list, {callbackLevel = 0}){
     String list = "( " + _list.join(', ') + " )";
     if(callbackLevel == 0 && where_conditions == ''){
       where_conditions = 'WHERE $col NOT IN "$list" ';
@@ -624,7 +641,7 @@ class SqfliteEasyDb{
       return this;
     }
 
-    int postitonOfBracket = indexOfNth(where_conditions, ')', callbackLevel - 1);
+    int postitonOfBracket = IndexOfNth(where_conditions, ')', callbackLevel - 1);
     if(postitonOfBracket <= 0){
       where_conditions += '$type ($col IN "$list") ';
       return this;
@@ -637,7 +654,7 @@ class SqfliteEasyDb{
     // print(where_conditions);
     return this;
   }
-  SqfliteEasyDb whereBetweenFunc(type, col, _list, {callbackLevel = 0}){
+  AzSqflite whereBetweenFunc(type, col, _list, {callbackLevel = 0}){
     String val1 = _list[0];
     String val2 = _list[1];
     if(callbackLevel == 0 && where_conditions == ''){
@@ -650,7 +667,7 @@ class SqfliteEasyDb{
       return this;
     }
 
-    int postitonOfBracket = indexOfNth(where_conditions, ')', callbackLevel - 1);
+    int postitonOfBracket = IndexOfNth(where_conditions, ')', callbackLevel - 1);
     if(postitonOfBracket <= 0){
       where_conditions += '$type ($col IN BETWEEN "$val1" AND "$val2") ';
       return this;
@@ -662,7 +679,7 @@ class SqfliteEasyDb{
     // print(where_conditions);
     return this;
   }
-  SqfliteEasyDb whereNulFunc(type, col, {callbackLevel = 0}){
+  AzSqflite whereNulFunc(type, col, {callbackLevel = 0}){
     if(callbackLevel == 0 && where_conditions == ''){
       where_conditions = 'WHERE $col IS NULL';
       return this;
@@ -673,7 +690,7 @@ class SqfliteEasyDb{
       return this;
     }
 
-    int postitonOfBracket = indexOfNth(where_conditions, ')', callbackLevel - 1);
+    int postitonOfBracket = IndexOfNth(where_conditions, ')', callbackLevel - 1);
     if(postitonOfBracket <= 0){
       where_conditions += '$type ($col IS NULL) ';
       return this;
@@ -688,7 +705,7 @@ class SqfliteEasyDb{
   }
   callQuery() async{
     var db = await openDatabase(db_name);
-    statement = 'SELECT $select_paramters FROM $tableName $join_statement $where_conditions $order_by_sorting $limit_result $offset';
+    statement = 'SELECT $select_paramters FROM $tableName $join_statement $where_conditions $group_by_sorting $order_by_sorting $limit_result $offset';
 
     // print(statement);
     return await db.rawQuery(statement);
@@ -992,16 +1009,16 @@ class SqfliteEasyDb{
     var db = await openDatabase(db_name);
     return await db.rawQuery('SELECT * FROM sqlite_master ORDER BY name;');
   }
-  getAllColumns(tableName) async {
+  getAllColumns(table_name) async {
     var db = await openDatabase(db_name);
-    String statementCheckColumn = "PRAGMA table_info($tableName)";
-    List list = await db.rawQuery(statementCheckColumn);
+    String statement_check_column = "PRAGMA table_info($table_name)";
+    List list = await db.rawQuery(statement_check_column);
     return list;
   }
 
-  getAllData(tableName) async {
+  getAllData(table_name) async {
     var db = await openDatabase(db_name);
-    List list = await db.rawQuery('SELECT * FROM ${tableName};');
+    List list = await db.rawQuery('SELECT * FROM ${table_name};');
     return list;
   }
 

@@ -7,7 +7,7 @@ UserBookDbModel userBookDbModelFromJsonSingle(String str) => UserBookDbModel.fro
 String userBookDbModelToJson(List<UserBookDbModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 
-class UserBookDbModel extends SqfliteEasyDb{
+class UserBookDbModel {
   // these are table defining terms
   String tableName = 'user_books';
   // String autoIncrementColumn = 'id';

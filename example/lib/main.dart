@@ -8,38 +8,76 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // open database
-  SqfliteEasyDb().open();
+  // old way
+  // SqfliteEasyDb().open();
+  // new way
+  await AzSqflite().open();
 
-  // create database table example
-  UserModel()
+  print('start 1');
+
+  // create database table example new way
+  print('Create table');
+  await AzSqflite().table('users6')
       .addColumn(name: "id", type: ColumnType.integer, isPrimaryKey: true, isAutoIncrement: true)
       .addColumn(name: "name", type: ColumnType.text, isNUll: true)
-      .addColumn(name: "father_name", type: ColumnType.text, isNUll: true)
+      .addColumn(name: "fatherName", type: ColumnType.text, isNUll: true)
       .execute();
 
+  print('start 2');
+
   // insert records examples
-  UserModel(name: "hassan 1", fatherName: "Khawaja Muhammad Asghar Saqi").insert();
-  UserModel(name: "hassan 2", fatherName: "Khawaja Muhammad Asghar Saqi").insert();
-  UserModel(name: "hassan 3", fatherName: "Khawaja Muhammad Asghar Saqi").insert();
+  // old way
+  // UserModel(name: "hassan 2", fatherName: "Khawaja Muhammad Asghar Saqi").insert();
+  // new way
+  print('insert record');
+  await AzSqflite().table('users6').insert({"name": "hassan 1", "fatherName": "Khawaja Muhammad Asghar Saqi"});
+  await AzSqflite().table('users6').insert({"name": "hassan 2", "fatherName": "Khawaja Muhammad Asghar Saqi"});
+
+  print('start 3');
 
   // get records example
-  print("get all records");
-  print(await UserModel().get());
+  print("get records after insert");
+  print(await AzSqflite().table('users6').get());
+
+  print('start 4');
 
   // update record example
-  UserModel(name: "abc").where(UserModel().id, 1).update();
-  print("get all records after update");
-  print(await UserModel().get());
+  await AzSqflite().table('users6').where('id', 1).update({"name": "hassan update 1", "fatherName": "Khawaja Muhammad Asghar Saqi"});
+
+  print('start 5');
+
+  print("get records after update");
+  print(await AzSqflite().table('users6').get());
+
+  print('start 6');
+
+  // delete single records example
+  print('delete record');
+  await AzSqflite().table('users6').where('id', 1).delete();
+
+  print('start 7');
+
+  print("get records after delete one record");
+  print(await AzSqflite().table('users6').get());
+
+  print('start 8');
 
   // delete all records example
-  UserModel().where(UserModel().id, 1).delete();
-  print("get all records after delete one");
-  print(await UserModel().get());
+  print('delete all records');
+  await AzSqflite().table('users6').delete();
 
-  // delete all records example
-  UserModel().delete();
-  print("no record after delete all");
-  print(await UserModel().get());
+
+  print('start 9');
+
+  print("get record after delete all");
+  print(await AzSqflite().table('users6').get());
+
+  print('start 10');
+
+  print('count record');
+  print(await AzSqflite().table('users6').count());
+
+  print('start 11');
 
   runApp(const MyApp());
 
