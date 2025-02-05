@@ -6,7 +6,7 @@ List<UserModel> UserModelFromJsonList(String str) => List<UserModel>.from(json.d
 UserModel UserModelFromJsonSingle(String str) => UserModel.fromJson(json.decode(str));
 String UserModelToJson(List<UserModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class UserModel {// extends SqfliteEasyDb{
+class UserModel extends AzSqflite{
   // these are table defining terms
   String tableName = 'users';
 
