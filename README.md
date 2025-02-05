@@ -9,7 +9,7 @@ A new Flutter project for easy sqlite queries for beginner who did not know how 
 ⚠️ It is recommended to use version:1.0.0 or above
 
 ## 👉 Step One: Only for version below 0.0.8 Extend with AzSqflite and Add table name to Model Class
-you can compare with sample model lib\services\sqlite\models\UserDbModel.dart\
+you can compare with sample model class [click here](https://github.com/hassan005004/sqflite-easy-queries/blob/main/example/lib/models/UserModel.dart)\
 Only for version:0.0.8 and below
 ```
   class UserDbModel extends AzSqflite{
