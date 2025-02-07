@@ -16,8 +16,8 @@ enum ColumnType {
     switch (this) {
       case ColumnType.integer || ColumnType.boolean:
         return 'INTEGER';
-      case ColumnType.text || ColumnType.date:
-        return 'TEXT';
+      // case ColumnType.text || ColumnType.date:
+      //   return 'TEXT';
       case ColumnType.bolb:
         return 'BLOB';
       case ColumnType.real:
@@ -26,9 +26,8 @@ enum ColumnType {
         return 'NUMERIC';
       case ColumnType.nullType:
         return 'NULL';
-
       default:
-        return 'text';
+        return 'TEXT';
     }
   }
 }

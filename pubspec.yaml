@@ -1,6 +1,6 @@
 name: sqflite_laravel_style_queries
-description: A flutter project to make sqflite easy queries
-version: 1.0.3
+description: A flutter project to make your sqflite queries easy like laravel.
+version: 1.0.4
 homepage: https://github.com/hassan005004/sqflite-easy-queries
 
 environment:

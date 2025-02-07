@@ -2,9 +2,13 @@
 import 'dart:convert';
 import 'package:sqflite_laravel_style_queries/sqflite_laravel_style_queries.dart';
 
-List<UserModel> UserModelFromJsonList(String str) => List<UserModel>.from(json.decode(str).map((x) => UserModel.fromJson(x)));
-UserModel UserModelFromJsonSingle(String str) => UserModel.fromJson(json.decode(str));
-String UserModelToJson(List<UserModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+// For list
+List<UserModel> userModelFromJsonList(String str) => List<UserModel>.from(json.decode(str).map((x) => UserModel.fromJson(x)));
+
+// For Single Record
+UserModel userModelFromJsonSingle(String str) => UserModel.fromJson(json.decode(str));
+
+String userModelToJson(List<UserModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class UserModel extends AzSqflite{
   // these are table defining terms
@@ -34,10 +38,10 @@ class UserModel extends AzSqflite{
     if (fatherName != null) "father_name": fatherName,
   };
 
-  Map<String, dynamic> toSqflite() => {
-    // normal toJson
-    "id": id,
-    "name": name,
-    "father_name": fatherName,
-  };
+  // Map<String, dynamic> toSqflite() => {
+  //   // normal toJson
+  //   "id": id,
+  //   "name": name,
+  //   "father_name": fatherName,
+  // };
 }

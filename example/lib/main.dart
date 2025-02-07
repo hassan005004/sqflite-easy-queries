@@ -8,9 +8,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // open database
-  // old way
-  // SqfliteEasyDb().open();
-  // new way
   await AzSqflite().open();
 
   print('start 1');
@@ -42,6 +39,7 @@ void main() async {
   print('start 4');
 
   // update record example
+  print("update record");
   await AzSqflite().table('users6').where('id', 1).update({"name": "hassan update 1", "fatherName": "Khawaja Muhammad Asghar Saqi"});
 
   print('start 5');
@@ -66,7 +64,6 @@ void main() async {
   print('delete all records');
   await AzSqflite().table('users6').delete();
 
-
   print('start 9');
 
   print("get record after delete all");
@@ -74,13 +71,12 @@ void main() async {
 
   print('start 10');
 
-  print('count record');
+  print('count records');
   print(await AzSqflite().table('users6').count());
 
   print('start 11');
 
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -90,7 +86,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sqlflite Laravel Style',
+      title: 'Sqlflite Laravel Style Quries',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: false,
@@ -118,13 +114,13 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Example of package",),
+            Text("Laravel 5 Style"),
             Text("Hassan Mehmood"),
             Text("https://zahidaz.com"),
           ],

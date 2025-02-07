@@ -2,9 +2,9 @@
 import 'dart:convert';
 import 'package:sqflite_laravel_style_queries/sqflite_laravel_style_queries.dart';
 
-List<UserBookModel> UserBookModelFromJsonList(String str) => List<UserBookModel>.from(json.decode(str).map((x) => UserBookModel.fromJson(x)));
-UserBookModel UserBookModelFromJsonSingle(String str) => UserBookModel.fromJson(json.decode(str));
-String UserBookModelToJson(List<UserBookModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+List<UserBookModel> userBookModelFromJsonList(String str) => List<UserBookModel>.from(json.decode(str).map((x) => UserBookModel.fromJson(x)));
+UserBookModel userBookModelFromJsonSingle(String str) => UserBookModel.fromJson(json.decode(str));
+String userBookModelToJson(List<UserBookModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 
 class UserBookModel extends AzSqflite{
