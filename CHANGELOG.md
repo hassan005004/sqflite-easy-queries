@@ -1,3 +1,5 @@
+## 1.1.0
+* Save method added for model class
 ## 1.0.0
 * Readme.md updated
 ## 0.0.8

@@ -175,6 +175,20 @@ class AzSqflite{
     dynamic queryResult = callQuery();
     return queryResult;
   }
+  first() async {
+    // return get2();
+    // return 1;
+    dynamic queryResult = await callQuery();
+    if (queryResult.isNotEmpty) {
+      return fromJson(queryResult.first);
+      print(queryResult.first);
+    } else {
+      print('No record found');
+    }
+    return this;
+  }
+
+
   // get3() async {
   //   this.select([
   //           "users.id as user_id",
@@ -372,6 +386,9 @@ class AzSqflite{
   }
 
   Map<String, dynamic> toJson() => {};
+  AzSqflite fromJson(Map<String, dynamic> json) {
+    throw UnimplementedError('fromJson() must be implemented by the subclass');
+  }
 
   insert(jsonObj){
     if(jsonObj != null){
@@ -382,6 +399,40 @@ class AzSqflite{
     return queryResult;
     // return this;
   }
+
+  // Save method that uses the model's JSON representation.
+
+
+  save() async {
+    // Convert the current model instance to JSON.
+    Map<String, dynamic> attributes = toJson();
+    var db = await openDatabase(db_name);
+
+    if (attributes.containsKey('id') && attributes['id'] != null) {
+      // If an id exists, update the record.
+      where('id', attributes['id']);
+      await callUpdateQuery(attributes);
+    } else {
+      // If no id exists, insert a new record and capture the new id.
+      int insertedId = await callInsertQuery([attributes]);
+      attributes['id'] = insertedId;
+    }
+
+    // Now fetch the latest record from the database using the id.
+    List<Map<String, dynamic>> result = await db.rawQuery(
+        'SELECT * FROM $tableName WHERE id = ?',
+        [attributes['id']]
+    );
+
+    if (result.isNotEmpty) {
+      // Use fromJson() to convert the record into a model instance.
+      return fromJson(result.first);
+    }
+
+    // If no record is found, return the current instance.
+    return this;
+  }
+
 
   // AzSqflite insertArray(){
   //   queryResult = callInsertQueryArray([toJson()]);
@@ -412,7 +463,7 @@ class AzSqflite{
   // }
 
 
-  AzSqflite addColumn({required name, required ColumnType type, isNUll = false, isPrimaryKey = false, isAutoIncrement = false}){
+  AzSqflite addColumn({required name, required ColumnType type, isNull = false, isPrimaryKey = false, isAutoIncrement = false}){
     excute_trigger = 'add_column';
 
     add_column += '$name $type';
@@ -425,8 +476,10 @@ class AzSqflite{
       add_column += ' AUTOINCREMENT';
     }
 
-    if(isNUll == true){
+    if(isNull == false){
       add_column += ' NOT NULL';
+    }else{
+      add_column += ' NULL';
     }
 
     add_column += ', ';
@@ -717,6 +770,7 @@ class AzSqflite{
     // print(statement);
     return await db.rawQuery(statement);
   }
+
   Future callDeleteQuery() async{
     // delete not support $offset > confirm
     // delete not support $order_by_sorting, $limit_result > not confirm
@@ -725,6 +779,7 @@ class AzSqflite{
     // print(statement);
     return await db.rawQuery(statement);
   }
+
   Future callInsertQuery(map) async{
     // print(map);
     String columns = '';
@@ -810,10 +865,13 @@ class AzSqflite{
     // print(bufferString);
     // insert all records
     var db = await openDatabase(db_name);
-    await db.rawInsert("INSERT INTO `$tableName` $columnsString VALUES $bufferString;");
+    // await db.rawInsert("INSERT INTO `$tableName` $columnsString VALUES $bufferString;");
+    int insertedId = await db.rawInsert("INSERT INTO `$tableName` $columnsString VALUES $bufferString;");
+    return insertedId;
     // print(a);
     // await db.close();
   }
+
   Future callInsertQueryArray(map) async{
     // print(map);
     String columns = '';

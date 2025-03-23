@@ -1,5 +1,5 @@
 publish pub package
 1. dart pub publish --dry-run
-2. dart pub publishy
+2. dart pub publish
 * A serial of 1.x.x will be use for AzSqflite() method
 * A serial of 0.x.x will be use for ModelClass() method

@@ -3,6 +3,8 @@ import 'package:example/models/UserModel.dart';
 import 'package:sqflite_laravel_style_queries/helper/models/column_types.dart';
 import 'package:sqflite_laravel_style_queries/sqflite_laravel_style_queries.dart';
 
+import 'models/UserNewModel.dart';
+
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,6 +13,7 @@ void main() async {
   await AzSqflite().open();
 
   print('start 1');
+
 
   // create database table example new way
   print('Create table');

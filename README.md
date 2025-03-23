@@ -96,7 +96,13 @@ Below version:0.0.8
 ```
   UserDbModel(name: "name", fatherName: "father").insert();
 ```
-
+Save Method [Model Cla](https://github.com/hassan005004/sqflite-easy-queries/blob/main/example/lib/models/UserNewModel.dart)
+```
+if record exist update otherwise create new 
+UserNewModel user = await UserNewModel().where('id', 1).first();
+user.name = 'hassan3';
+await user.save();
+```
 ### ▪ Update Record
 ⚠️ You need to pass all values for update. But i will fix this issue soon
 version:0.0.8 or Above
